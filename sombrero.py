@@ -54,9 +54,13 @@ def in_progress(gameURL):
 def load_batters(batter):
     d = {}
     d["final"] = batter.parent.parent.get("status_ind")
-    d["batter"] = batter.get("name_display_first_last")
+    if batter.parent.parent.get("game_id").endswith("2"):
+        d["batter"] = batter.get("name_display_first_last") + "2"
+    else:
+        d["batter"] = batter.get("name_display_first_last")
     d["ab"] = batter.get("ab")
     d["so"] = batter.get("so")
+    d["team"] = batter.parent.parent.get(batter.parent.get("team_flag") + "_fname")
     return d
     
 def batters(gameURL):

@@ -3,11 +3,14 @@ from twitter import *
 from auth import *
 
 twit = Twitter(auth=my_auth)
-filename = y + "-" + m + "-" + d + "_sombreros.txt"
-filename2 = y + "-" + m + "-" + d + "_sombreros_close.txt"
-f = open(filename, "a+")
+fours = y + "-" + m + "-" + d + "_sombreros.txt"
+threes = y + "-" + m + "-" + d + "_sombreros_close.txt"
+others = y + "-" + m + "-" + d + "_others.txt"
+f = open(fours, "a+")
 f.close()
-f = open(filename2, "a+")
+f = open(threes, "a+")
+f.close()
+f = open(others, "a+")
 f.close()
 
 while games_in_progress(basegamedayURL) != 0:
@@ -15,49 +18,50 @@ while games_in_progress(basegamedayURL) != 0:
     for x in range(0,len(todays_games)):
         batter_list = batters(todays_games[x])
         for batter in batter_list:
-            if batter["batter"] + ", " + batter["so"] in open(filename).read():
+            if batter["batter"] + ", " + batter["so"] in open(fours).read():
                 print batter["batter"] + " already tweeted"
                 
                 pass
             elif int(batter["so"]) > 4:
                 twit.statuses.update(status = batter["batter"] + ": " + batter["so"] + " strikeouts in " + batter["ab"] + " at-bats. #PlatinumSombrero #SombreroWatch")
                 print batter["batter"]
-                if batter["batter"] in open(filename).read():
-                    f = open(filename, "r")
+                if batter["batter"] in open(fours).read():
+                    f = open(fours, "r")
                     lines = f.readlines()
                     f.close()
-                    f = open(filename, "w")
+                    f = open(fours, "w")
                     for line in lines:
                         if line!=batter["batter"] + ", 4, " + str(re.compile("\d")) + "\n":
                             f.write(line)
                     f.close()
-                open(filename, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + "\n")
+                open(fours, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + "\n")
     #            close(filename)
             elif batter["so"] == "4":
                 twit.statuses.update(status = batter["batter"] + ": " + batter["so"] + " strikeouts in " + batter["ab"] + " at-bats. #GoldenSombrero #SombreroWatch")
                 print batter["batter"]
-                f = open(filename2, "r")
+                f = open(threes, "r")
                 lines = f.readlines()
                 f.close()
-                f = open(filename2, "w")
+                f = open(threes, "w")
                 for line in lines:
                     if line!=batter["batter"] + ", 3, " + str(re.compile(".")) + "\n":
                         f.write(line)
                 f.close()
-                open(filename, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + "\n")
+                open(fours, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + "\n")
     #            close(filename)
             elif batter["so"] == "3":
-                if batter["batter"] in open(filename2).read():
+                if batter["batter"] in open(threes).read():
                     print batter["batter"] + " already tweeted"
                     pass
                 else:
                     twit.statuses.update(status = batter["batter"] + " is one strikeout away from a #GoldenSombrero! #SombreroWatch")
                     print batter["batter"]
-                    open(filename2, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + "\n")
+                    open(threes, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + "\n")
     #            close(filename)
             elif batter["so"] == "2":
                 if batter["final"] != "F":
                     print batter["batter"] + " 2"
+                    open(others, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + "\n")
     print "waiting ... " + str(time.strftime("%H:%M:%S"))
     time.sleep(300)
     #twit.statuses.update(status="I'm tweeting from Python!")
