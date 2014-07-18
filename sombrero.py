@@ -6,14 +6,14 @@ from bs4 import BeautifulSoup
 
 y = time.strftime("%Y")
 m = time.strftime("%m")
-d = int(time.strftime("%d"))
-if int(time.strftime("%H")) < 8:
-    d -= 1
-d = str(d)
+#d = "07"
+d = time.strftime("%d")
 
 basegamedayURL = "http://gd2.mlb.com/components/game/mlb/year_" + y + "/month_" + m + "/day_" + d + "/"
 top10 = [{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0}]
 bottom10 = [{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0}]
+
+team_dict = {"cle": "Indians", "cha": "White Sox", "bos": "Red Sox", "nya": "Yankees", "chn": "Cubs", "sln": "Cardinals", "col": "Rockies", "sfn": "Giants", "det": "Tigers", "sdn": "Padres", "hou": "Astros", "tex": "Rangers", "kca": "Royals", "min": "Twins", "lan": "Dodgers", "ari": "Diamondbacks", "mia": "Marlins", "phi": "Phillies", "nyn": "Mets", "ana": "Angels", "oak": "Athletics", "sea": "Mariners", "pit": "Pirates", "mil": "Brewers", "tba": "Rays", "cin": "Reds", "tor": "Blue Jays", "bal": "Orioles", "was": "Nationals", "atl": "Braves"}
 
 #f1 = open("pitches.txt", "w+")
 def get_games(gamedayURL):
@@ -31,7 +31,7 @@ def games_in_progress(gamedayURL):
     soup = BeautifulSoup(page[1])
     count = 0
     for game in soup.find_all("game"):
-        if game["status"] == "IN_PROGRESS" or game["status"] == "PRE_GAME":
+        if game["status"] == "IN_PROGRESS" or game["status"] == "PRE_GAME" or game["status"] == "IMMEDIATE_PREGAME" or game["status"] == "DELAYED":
             count += 1
     return count
     
@@ -50,17 +50,27 @@ def in_progress(gameURL):
     soup = BeautifulSoup(page[1])
     if soup.find("boxscore").get("status") == "F":
         return false
-    
+   
+def is_extras(gameURL):
+    conn = httplib2.Http(".cache")
+    page = conn.request(gameURL + "boxscore.xml","GET")
+    page[0]
+    soup = BeautifulSoup(page[1])
+    if len(soup.find_all("inning_line_score")) > 9:
+        return true
+    else:
+        return false
+
 def load_batters(batter):
     d = {}
     d["final"] = batter.parent.parent.get("status_ind")
     if batter.parent.parent.get("game_id").endswith("2"):
-        d["batter"] = batter.get("name_display_first_last") + "2"
+        d["batter"] = batter.get("name_display_first_last") + " (game 2)"
     else:
         d["batter"] = batter.get("name_display_first_last")
     d["ab"] = batter.get("ab")
     d["so"] = batter.get("so")
-    d["team"] = batter.parent.parent.get(batter.parent.get("team_flag") + "_fname")
+    d["team"] = team_dict[batter.parent.parent.get(batter.parent.get("team_flag") + "_team_code")]
     return d
     
 def batters(gameURL):
