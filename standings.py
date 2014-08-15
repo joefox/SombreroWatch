@@ -4,23 +4,23 @@ import os
 standings = "standings.csv"
 testbatter = {"shortbatter": "Javier Baez"}
 
-f = open(standings, "r")
-f.close()
+fs = open(standings, "r")
+fs.close()
 def update_standings(batter):
     oncharts = False
-    f = open(standings, "r")
+    fs = open(standings, "r")
     lines = f.readlines()
-    f.close()
-    f =open(standings,"w")
+    fs.close()
+    fs =open(standings,"w")
     for line in lines:
         if line.startswith(batter["shortbatter"]):
             oncharts = True
             s = re.findall(r"\d", line)
-            f.write(batter["shortbatter"] + ", " + str((int(s[0])+1)) + "\n")
+            fs.write(batter["shortbatter"] + ", " + str((int(s[0])+1)) + "\n")
         else:
-            f.write(line)
+            fs.write(line)
 
     if oncharts == False:
-        f.write(batter["shortbatter"] + ", 1")
-    f.close()
+        fs.write(batter["shortbatter"] + ", 1")
+    fs.close()
 
