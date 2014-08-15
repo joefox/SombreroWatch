@@ -68,6 +68,7 @@ def load_batters(batter):
         d["batter"] = batter.get("name_display_first_last") + " (game 2)"
     else:
         d["batter"] = batter.get("name_display_first_last")
+    d["shortbatter"] = batter.get("name_display_first_last")
     d["ab"] = batter.get("ab")
     d["so"] = batter.get("so")
     d["team"] = team_dict[batter.parent.parent.get(batter.parent.get("team_flag") + "_team_code")]
