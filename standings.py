@@ -10,6 +10,7 @@ def update_standings(batter):
     oncharts = False
     fs = open(standings, "r")
     lines = f.readlines()
+    print(lines)
     fs.close()
     fs =open(standings,"w")
     for line in lines:
@@ -19,6 +20,7 @@ def update_standings(batter):
             fs.write(batter["shortbatter"] + ", " + str((int(s[0])+1)) + "\n")
         else:
             fs.write(line)
+            print(line)
 
     if oncharts == False:
         fs.write(batter["shortbatter"] + ", 1")
