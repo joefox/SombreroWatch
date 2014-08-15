@@ -57,9 +57,9 @@ def is_extras(gameURL):
     page[0]
     soup = BeautifulSoup(page[1])
     if len(soup.find_all("inning_line_score")) > 9:
-        return true
+        return True
     else:
-        return false
+        return False
 
 def load_batters(batter):
     d = {}
