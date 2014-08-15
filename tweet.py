@@ -1,11 +1,12 @@
 from sombrero import *
 from twitter import *
+from standings import *
 import yo
 from auth import *
 import os
-import appnope
+#import appnope
 
-appnope.nope()
+#appnope.nope()
 
 
 twit = Twitter(auth=my_auth)
@@ -48,7 +49,7 @@ while games_in_progress(basegamedayURL) != 0:
                     lines = f.readlines()
                     f.close()
                     f = open(fours, "w")
-                    for line in lines:
+                    for line in lines
                         if line!=batter["batter"] + ", 4, " + str(re.compile("\d,.")) + "\n":
                             f.write(line)
                     f.close()
@@ -56,6 +57,7 @@ while games_in_progress(basegamedayURL) != 0:
     #            close(filename)
             elif batter["so"] == "4":
                 twit.statuses.update(status = batter["batter"] + ": " + batter["so"] + " strikeouts in " + batter["ab"] + " at-bats. " + extras_statement + "#GoldenSombrero #" + batter["team"].replace(" ","") + " #Whiff")
+                update_standings(batter)
                 print batter["batter"]
                 f = open(threes, "r")
                 lines = f.readlines()
