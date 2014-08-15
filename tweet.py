@@ -49,7 +49,7 @@ while games_in_progress(basegamedayURL) != 0:
                     lines = f.readlines()
                     f.close()
                     f = open(fours, "w")
-                    for line in lines
+                    for line in lines:
                         if line!=batter["batter"] + ", 4, " + str(re.compile("\d,.")) + "\n":
                             f.write(line)
                     f.close()
