@@ -85,6 +85,7 @@ while games_in_progress(basegamedayURL) != 0:
     ff = open(os.path.expanduser("~/Dropbox/time.txt"), "w").write("waiting ... " + str(time.strftime("%H:%M:%S")))
     f = open(strikeouts, "rb")
     s3_conn.upload(strikeouts,f,"sombrero.watch/sombrero",public=True)
+    s3.conn.upload(standings,f,"sombrero.watch/sombrero",public=True)
     time.sleep(300)
     #twit.statuses.update(status="I'm tweeting from Python!")
 print games_in_progress(basegamedayURL)
