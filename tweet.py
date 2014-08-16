@@ -87,7 +87,7 @@ if games_in_progress(basegamedayURL) != 0:
     s3_conn.upload(strikeouts,f,"sombrero.watch/sombrero",public=True)
     f = open(standings, "rb")
     s3_conn.upload(standings,f,"sombrero.watch/sombrero",public=True)
-//    time.sleep(300)
+#    time.sleep(300)
     #twit.statuses.update(status="I'm tweeting from Python!")
 print games_in_progress(basegamedayURL)
 if games_in_progress(basegamedayURL) == 0:
