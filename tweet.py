@@ -82,7 +82,7 @@ if games_in_progress(basegamedayURL) != 0:
                 if batter["final"] != "F":
                     print batter["batter"] + batter["so"]
     print "waiting ..."
-    ff = open(os.path.expanduser("~/Dropbox/time.txt"), "w").write("waiting ... " + str(time.strftime("%H:%M:%S")))
+    ff = open(os.path.expanduser("/home/ubuntu/Dropbox/time.txt"), "w").write("waiting ... " + str(time.strftime("%H:%M:%S")))
     f = open(strikeouts, "rb")
     s3_conn.upload(strikeouts,f,"sombrero.watch/sombrero",public=True)
     f = open(standings, "rb")
@@ -90,8 +90,11 @@ if games_in_progress(basegamedayURL) != 0:
 #    time.sleep(300)
     #twit.statuses.update(status="I'm tweeting from Python!")
 print games_in_progress(basegamedayURL)
-if games_in_progress(basegamedayURL) == 0:
-    f = open(fours, "r")
+f = open(fours, "r")
+done = f.readlines()
+f.close()
+if games_in_progress(basegamedayURL) == 0 and (len(done) == 0 or done[len(done)-1] != "done"):
+    f = open(fours, "a+")
     f2 = open(threes, "r")
     sombreros = 0
     close_calls = 0
@@ -99,6 +102,7 @@ if games_in_progress(basegamedayURL) == 0:
         sombreros += 1
     for line in f2:
         close_calls += 1
+    f.write("done")
     f.close()
     f2.close()
     print "sombreros: " + str(sombreros)
@@ -116,3 +120,4 @@ if games_in_progress(basegamedayURL) == 0:
     if sombreros > 1:
         print "ok"
         twit.statuses.update(status = str(sombreros) + " MLB players earned sombreros today. It was a good day. #GoldenSombrero #whiff")
+
