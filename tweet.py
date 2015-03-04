@@ -1,5 +1,5 @@
 from sombrero import *
-from twitter import *
+import twitter
 from standings import *
 import yo
 from auth import *
@@ -8,8 +8,8 @@ import os
 
 #appnope.nope()
 
+api = twitter.Api(consumer_key=Akey,consumer_secret=Askey,access_token_key = Atoken,access_token_secret = Astoken)
 
-twit = Twitter(auth=my_auth)
 fours = y + "-" + m + "-" + d + "_sombreros.txt"
 threes = y + "-" + m + "-" + d + "_sombreros_close.txt"
 strikeouts = y + "-" + m + "-" + d + "_all.csv"
@@ -38,11 +38,11 @@ if games_in_progress(basegamedayURL) != 0:
             f.close()
             if batter["batter"] + ", " + batter["so"] in open(fours).read():
                 print batter["batter"] + " already tweeted"
-                
                 pass
             elif int(batter["so"]) > 4:
-                yo_client.yo()
-                twit.statuses.update(status = batter["batter"] + ": " + batter["so"] + " strikeouts in " + batter["ab"] + " at-bats. " + extras_statement + "#PlatinumSombrero #SombreroWatch #" + batter["team"].replace(" ","") + " #Whiff")
+                # yo_client.yo()
+                status = batter["batter"] + ": " + batter["so"] + " strikeouts in " + batter["ab"] + " at-bats. " + extras_statement + "#PlatinumSombrero #SombreroWatch #" + batter["team"].replace(" ","") + " #Whiff"
+                api.PostUpdate(status)
                 print batter["batter"]
                 if batter["batter"] in open(fours).read():
                     f = open(fours, "r")
@@ -54,9 +54,9 @@ if games_in_progress(basegamedayURL) != 0:
                             f.write(line)
                     f.close()
                 open(fours, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + ", " + batter["team"] + "\n")
-    #            close(filename)
             elif batter["so"] == "4":
-                twit.statuses.update(status = batter["batter"] + ": " + batter["so"] + " strikeouts in " + batter["ab"] + " at-bats. " + extras_statement + "#GoldenSombrero #" + batter["team"].replace(" ","") + " #Whiff")
+                status = batter["batter"] + ": " + batter["so"] + " strikeouts in " + batter["ab"] + " at-bats. " + extras_statement + "#GoldenSombrero #" + batter["team"].replace(" ","") + " #Whiff"
+                api.PostUpdate(status)
                 update_standings(batter)
                 print batter["batter"]
                 f = open(threes, "r")
@@ -68,27 +68,24 @@ if games_in_progress(basegamedayURL) != 0:
                         f.write(line)
                 f.close()
                 open(fours, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + ", " + batter["team"] + "\n")
-    #            close(filename)
             elif batter["so"] == "3":
                 if batter["batter"] in open(threes).read():
                     print batter["batter"] + " already tweeted #" + batter["team"].replace(" ","")
                     pass
                 else:
-                    twit.statuses.update(status = batter["batter"] + " is one strikeout away from a #GoldenSombrero! " + extras_statement + "#" + batter["team"].replace(" ","") + " #Whiff")
+                    status = batter["batter"] + " is one strikeout away from a #GoldenSombrero! " + extras_statement + "#" + batter["team"].replace(" ","") + " #Whiff"
+                    api.PostUpdate(status)
                     print batter["batter"]
                     open(threes, "a+").write(batter["batter"] + ", " + batter["so"] + ", " + batter["ab"] + ", " + batter["team"] + "\n")
     #            close(filename)
             elif int(batter["so"]) > 0:
                 if batter["final"] != "F":
                     print batter["batter"] + batter["so"]
-    print "waiting ..."
-    ff = open(os.path.expanduser("/home/ubuntu/Dropbox/time.txt"), "w").write("waiting ... " + str(time.strftime("%H:%M:%S")))
-    f = open(strikeouts, "rb")
-    s3_conn.upload(strikeouts,f,"sombrero.watch/sombrero",public=True)
-    f = open(standings, "rb")
-    s3_conn.upload(standings,f,"sombrero.watch/sombrero",public=True)
-#    time.sleep(300)
-    #twit.statuses.update(status="I'm tweeting from Python!")
+    # f = open(strikeouts, "rb")
+    # s3_conn.upload(strikeouts,f,"sombrero.watch/sombrero",public=True)
+    # f = open(standings, "rb")
+    # s3_conn.upload(standings,f,"sombrero.watch/sombrero",public=True)
+
 print games_in_progress(basegamedayURL)
 f = open(fours, "r")
 done = f.readlines()
@@ -107,17 +104,22 @@ if games_in_progress(basegamedayURL) == 0 and (len(done) == 0 or done[len(done)-
     f2.close()
     print "sombreros: " + str(sombreros)
     if sombreros == 0 and close_calls == 0:
-        twit.statuses.update(status = "Nobody even came close to a sombrero today. :( #GoldenSombrero #whiff")
+        status = "Nobody even came close to a sombrero today. :( #GoldenSombrero #whiff"
+        api.PostUpdate(status)
     if sombreros == 0 and close_calls == 1:
-        twit.statuses.update(status = str(close_calls) + " close call, but no sombreros today. #GoldenSombrero #whiff")
+        status = str(close_calls) + " close call, but no sombreros today. #GoldenSombrero #whiff"
+        api.PostUpdate(status)
     if sombreros == 0 and close_calls > 1:
-        twit.statuses.update(status = str(close_calls) + " close calls, but no sombreros today. #GoldenSombrero #whiff")
+        status = str(close_calls) + " close calls, but no sombreros today. #GoldenSombrero #whiff"
+        api.PostUpdate(status)
     if sombreros == 1:
         f = open(fours, "r")
         line = f.readline()
-        twit.statuses.update(status = "Only one MLB player/hero (" + line.split(",")[0] + ") earned a golden sombrero today. #GoldenSombrero #" + line.split(",")[3].replace(" ","") + " #whiff")
+        status = "Only one MLB player/hero (" + line.split(",")[0] + ") earned a golden sombrero today. #GoldenSombrero #" + line.split(",")[3].replace(" ","") + " #whiff"
+        api.PostUpdate(status)
         f.close()
     if sombreros > 1:
         print "ok"
-        twit.statuses.update(status = str(sombreros) + " MLB players earned sombreros today. It was a good day. #GoldenSombrero #whiff")
+        status = str(sombreros) + " MLB players earned sombreros today. It was a good day. #GoldenSombrero #whiff"
+        api.PostUpdate(status)
 

@@ -13,7 +13,7 @@ basegamedayURL = "http://gd2.mlb.com/components/game/mlb/year_" + y + "/month_" 
 top10 = [{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0}]
 bottom10 = [{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0}]
 
-team_dict = {"cle": "Indians", "cha": "White Sox", "bos": "Red Sox", "nya": "Yankees", "chn": "Cubs", "sln": "Cardinals", "col": "Rockies", "sfn": "Giants", "det": "Tigers", "sdn": "Padres", "hou": "Astros", "tex": "Rangers", "kca": "Royals", "min": "Twins", "lan": "Dodgers", "ari": "Diamondbacks", "mia": "Marlins", "phi": "Phillies", "nyn": "Mets", "ana": "Angels", "oak": "Athletics", "sea": "Mariners", "pit": "Pirates", "mil": "Brewers", "tba": "Rays", "cin": "Reds", "tor": "Blue Jays", "bal": "Orioles", "was": "Nationals", "atl": "Braves"}
+team_dict = {"cle": "Indians", "cha": "White Sox", "bos": "Red Sox", "nya": "Yankees", "chn": "Cubs", "sln": "Cardinals", "col": "Rockies", "sfn": "Giants", "det": "Tigers", "sdn": "Padres", "hou": "Astros", "tex": "Rangers", "kca": "Royals", "min": "Twins", "lan": "Dodgers", "ari": "Diamondbacks", "mia": "Marlins", "phi": "Phillies", "nyn": "Mets", "ana": "Angels", "oak": "Athletics", "sea": "Mariners", "pit": "Pirates", "mil": "Brewers", "tba": "Rays", "cin": "Reds", "tor": "Blue Jays", "bal": "Orioles", "was": "Nationals", "atl": "Braves","asu":"Arizona State","boc":"Boston College","neu":"Northeastern University","umi":"University of Miami"}
 
 #f1 = open("pitches.txt", "w+")
 def get_games(gamedayURL):
@@ -71,6 +71,7 @@ def load_batters(batter):
     d["shortbatter"] = batter.get("name_display_first_last")
     d["ab"] = batter.get("ab")
     d["so"] = batter.get("so")
+    print d["batter"]
     d["team"] = team_dict[batter.parent.parent.get(batter.parent.get("team_flag") + "_team_code")]
     return d
     
