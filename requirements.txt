@@ -1,7 +1,6 @@
 Jinja2==2.7.3
 MarkupSafe==0.23
 PyYAML==3.11
-appnope==0.0.6
 beautifulsoup4==4.3.2
 binaryornot==0.3.0
 cookiecutter==0.7.2

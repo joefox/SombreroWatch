@@ -4,11 +4,11 @@ from standings import *
 import yo
 from auth import *
 import os
-#import appnope
-
-#appnope.nope()
+import tinys3
 
 api = twitter.Api(consumer_key=Akey,consumer_secret=Askey,access_token_key = Atoken,access_token_secret = Astoken)
+
+s3_conn = tinys3.Connection(s3key,s3secret)
 
 fours = y + "-" + m + "-" + d + "_sombreros.txt"
 threes = y + "-" + m + "-" + d + "_sombreros_close.txt"
@@ -21,7 +21,7 @@ f = open(strikeouts, "w")
 f.close()
 t = 1 
 
-if games_in_progress(basegamedayURL) != 0:
+if games_in_progress(basegamedayURL) == 0:
     todays_games = get_games(basegamedayURL)
     f = open(strikeouts, "w")
     f.write("player,team,k,ab,extra\n")    
@@ -81,8 +81,8 @@ if games_in_progress(basegamedayURL) != 0:
             elif int(batter["so"]) > 0:
                 if batter["final"] != "F":
                     print batter["batter"] + batter["so"]
-    # f = open(strikeouts, "rb")
-    # s3_conn.upload(strikeouts,f,"sombrero.watch/sombrero",public=True)
+    f = open(strikeouts, "rb")
+    s3_conn.upload(strikeouts,f,"sombrero.watch/sombrero",public=True)
     # f = open(standings, "rb")
     # s3_conn.upload(standings,f,"sombrero.watch/sombrero",public=True)
 
