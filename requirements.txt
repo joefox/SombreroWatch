@@ -7,7 +7,10 @@ binaryornot==0.3.0
 cookiecutter==0.7.2
 futures==2.1.6
 httplib2==0.9
+oauthlib==0.7.2
+python-twitter==2.2
 python-yo==0.1.0
 requests==2.3.0
+requests-oauthlib==0.4.2
 tinys3==0.1.11
-twitter==1.14.2
+wsgiref==0.1.2
