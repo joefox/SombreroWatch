@@ -21,7 +21,7 @@ f = open(strikeouts, "w")
 f.close()
 t = 1 
 
-if games_in_progress(basegamedayURL) == 0:
+if games_in_progress(basegamedayURL) != 0:
     todays_games = get_games(basegamedayURL)
     f = open(strikeouts, "w")
     f.write("player,team,k,ab,extra\n")    
