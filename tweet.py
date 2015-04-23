@@ -83,8 +83,8 @@ if games_in_progress(basegamedayURL) != 0:
                     print batter["batter"] + batter["so"]
     f = open(strikeouts, "rb")
     s3_conn.upload(strikeouts,f,"sombrero.watch/sombrero",public=True)
-    # f = open(standings, "rb")
-    # s3_conn.upload(standings,f,"sombrero.watch/sombrero",public=True)
+    f = open(standings, "rb")
+    s3_conn.upload(standings,f,"sombrero.watch/sombrero",public=True)
 
 print games_in_progress(basegamedayURL)
 f = open(fours, "r")
