@@ -124,5 +124,5 @@ if games_in_progress(basegamedayURL) == 0 and (len(done) == 0 or done[len(done)-
     if sombreros > 1:
         print "ok"
         status = str(sombreros) + " MLB players earned sombreros today. It was a good day. #GoldenSombrero #whiff"
-       # api.PostUpdate(status)
+       api.PostUpdate(status)
 
