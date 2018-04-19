@@ -21,6 +21,8 @@ f = open(strikeouts, "w")
 f.close()
 t = 1 
 
+print basegamedayURL
+
 if games_in_progress(basegamedayURL) != 0:
     todays_games = get_games(basegamedayURL)
     f = open(strikeouts, "w")
