@@ -9,7 +9,7 @@ m = time.strftime("%m")
 #d = "07"
 d = time.strftime("%d")
 
-basegamedayURL = "http://gd2.mlb.com/components/game/mlb/year_" + y + "/month_" + m + "/day_" + d + "/"
+basegamedayURL = "http://gd2.mlb.com/components/game/mlb/year_" + y + "/month_" + m + "/day_" + d
 top10 = [{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0},{"speed":0, "pitcher":0}]
 bottom10 = [{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0},{"speed":200, "pitcher":0}]
 
@@ -21,12 +21,12 @@ def get_games(gamedayURL):
     page = conn.request(gamedayURL,"GET")
     page[0]
     soup = BeautifulSoup(page[1])
-    games = [gamedayURL + game.lstrip() for game in soup.find_all(text=re.compile("gid"))]
+    games = [gamedayURL + "/" + game.lstrip() for game in soup.find_all(text=re.compile("gid"))]
     return games
 
 def games_in_progress(gamedayURL):
     conn = httplib2.Http(".cache")
-    page = conn.request(gamedayURL + "scoreboard.xml","GET")
+    page = conn.request(gamedayURL + "/" + "scoreboard.xml","GET")
     page[0]
     soup = BeautifulSoup(page[1])
     count = 0
@@ -37,7 +37,7 @@ def games_in_progress(gamedayURL):
     
 def start_time(gamedayURL):
     conn = httplib2.Http(".cache")
-    page = conn.request(gamedayURL + "master_scoreboard.xml","GET")
+    page = conn.request(gamedayURL + "/" + "master_scoreboard.xml","GET")
     page[0]
     soup = BeautifulSoup(page[1])
     game1 = soup.find("game")
