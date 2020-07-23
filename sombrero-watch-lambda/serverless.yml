@@ -1,0 +1,92 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: sombrero-watch-lambda
+# app and org for use with dashboard.serverless.com
+app: sombrero-watch-lambda-app
+org: joemfox
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  vpc:
+    securityGroupIds:
+      - sg-0f6fee8f5bc2311b1
+    subnetIds:
+      - subnet-4a1ed03d
+      - subnet-02c77dfd17b797e58
+
+# you can overwrite defaults here
+#  stage: dev
+#  region: us-east-1
+
+# you can add statements to the Lambda function's IAM Role here
+#  iamRoleStatements:
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:ListBucket"
+#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
+#    - Effect: "Allow"
+#      Action:
+#        - "s3:PutObject"
+#      Resource:
+#        Fn::Join:
+#          - ""
+#          - - "arn:aws:s3:::"
+#            - "Ref" : "ServerlessDeploymentBucket"
+#            - "/*"
+
+# you can define service wide environment variables here
+# environment:
+#   DB_KEY: ${ssm:/sombrerodb-password~true}
+
+# you can add packaging information here
+#package:
+#  include:
+#    - include-me.js
+#    - include-me-dir/**
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  tweet:
+    handler: handler.tweet
+    environment:
+      DB_NAME: 'postgres'
+      TWITTER_APP_SECRET: ${ssm:/sombrerowatch-app-secret~true}
+      TWITTER_BOT_SECRET: ${ssm:/sombrerowatch-account-secret~true}
+      DB_KEY: ${ssm:/sombrerodb-password~true}
+      DB_PORT: 5432
+
+  # tweet:
+  #   handler: handler.tweet
+#    Define function environment variables here
+    # environment:
+    #   DB_KEY: ${ssm:/sombrerodb-password~true}
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"
