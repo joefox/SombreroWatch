@@ -23,6 +23,8 @@ const T = new Twit({
 const mlbStats = new MLBStatsAPI();
 const RDS = new AWS.RDSDataService()
 
+let HIT_DB = false
+
 function prepString(s){
     return `'${s.toString().replace("'","''")}'`
 }
@@ -30,37 +32,41 @@ function prepString(s){
 function updateDB(data){
     let tasks = []
     for(let r = 0; r < data.length; r++){
-        let x = new Promise((res,rej) => {
+        if(data[r].strikeouts >= 3){
+            HIT_DB = true
 
-            let query = `INSERT INTO "sombrero"(${Object.keys(data[r]).join()})
-            VALUES (${Object.values(data[r]).map(s => prepString(s)).join()})
-            ON CONFLICT (id) DO
-            UPDATE SET tweeted=FALSE WHERE EXCLUDED.strikeouts!=${data[r].strikeouts}; INSERT INTO "sombrero"(${Object.keys(data[r]).join()})
-            VALUES (${Object.values(data[r]).map(s => prepString(s)).join()})
-            ON CONFLICT (id) DO
-            UPDATE SET strikeouts=${data[r].strikeouts};`
+            let x = new Promise((res,rej) => {
+                
+                let query = `INSERT INTO "sombrero"(${Object.keys(data[r]).join()})
+                VALUES (${Object.values(data[r]).map(s => prepString(s)).join()})
+                ON CONFLICT (id) DO
+                UPDATE SET tweeted=FALSE WHERE EXCLUDED.strikeouts!=${data[r].strikeouts}; INSERT INTO "sombrero"(${Object.keys(data[r]).join()})
+                VALUES (${Object.values(data[r]).map(s => prepString(s)).join()})
+                ON CONFLICT (id) DO
+                UPDATE SET strikeouts=${data[r].strikeouts};`
                 
                 // console.log(query)
                 
-        
-            const params = {
-                secretArn: DB_SECRET_ARN,
-                resourceArn: DB_RESOURCE_ARN,
-                sql: query,
-                database: DB_NAME
-            }
-            
-            
-            RDS.executeStatement(params,(err,data)=>{
-                if(err){
-                    rej(err)
-                } else {
-                    res(data)
+                
+                const params = {
+                    secretArn: DB_SECRET_ARN,
+                    resourceArn: DB_RESOURCE_ARN,
+                    sql: query,
+                    database: DB_NAME
                 }
                 
+                console.log('updating sombrero records in DB')
+                RDS.executeStatement(params,(err,data)=>{
+                    if(err){
+                        rej(err)
+                    } else {
+                        res(data)
+                    }
+                    
+                })
             })
-        })
-        tasks.push(x)
+            tasks.push(x)
+        }
     }
     return tasks
 }
@@ -77,7 +83,7 @@ function getSombreros(){
             database: DB_NAME
         }
         
-        
+        console.log('pulling fresh sombreros from DB')
         RDS.executeStatement(params,(err,data)=>{
             if(err){
                 rej(err)
@@ -106,7 +112,7 @@ function markTweeted(data){
             database: DB_NAME
         }
         
-        
+        console.log('updating rows that were tweeted out')
         RDS.executeStatement(params,(err,data)=>{
             if(err){
                 rej(err)
@@ -247,12 +253,22 @@ function getStrikeoutsFromGame(plays, gameInfo){
     
     console.log(`TOTAL: ${allPlayerKCounts.length} players`)
     await Promise.all(updateDB(allPlayerKCounts))
-        .then(getSombreros)
-        .then(d => {
-            console.log(`Tweeting ${d.records.length} sombrero watches`)
-            for(let i = 0; i < d.records.length; i++){
-                tweetSombrero(d.columnMetadata,d.records[i])
+        .then(()=>{
+            if(HIT_DB){
+                return getSombreros()
+            } else {
+                console.log('skipping DB, nobody close')
+                return []
             }
+        })
+        .then(d => {
+            if(d.records){
+
+                console.log(`Tweeting ${d.records.length} sombrero watches`)
+                for(let i = 0; i < d.records.length; i++){
+                    tweetSombrero(d.columnMetadata,d.records[i])
+                }
+            } else console.log('no tweets to send')
         })
 
     // return {
